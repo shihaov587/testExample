@@ -1,6 +1,8 @@
 <template>
   <div class="hello">
-    <h1>{{ msg }}</h1>
+    <h1>{{ testMsg }}</h1>
+    <h1>{{ zInfo }}</h1>
+    <el-button type="primary" @click="handleClick">点击</el-button>
     <p>
       For a guide and recipes on how to configure / customize this project,<br>
       check out the
@@ -33,10 +35,32 @@
 </template>
 
 <script>
+import index from '@/models/index'
 export default {
   name: 'HelloWorld',
   props: {
-    msg: String
+    msg: String,
+    info: String
+  },
+  data () {
+    return {
+      zInfo: this.info,
+      testMsg: ''
+    }
+  },
+  mounted: function() {
+    this.$emit('loadMsg','我是子组件的数据')
+    index.get().then(res => {
+        console.log(res);
+        this.testMsg = res.data.name
+      })
+  },
+  methods: {
+    handleClick() {
+      index.get().then(res => {
+        console.log(res);
+      })
+    }
   }
 }
 </script>

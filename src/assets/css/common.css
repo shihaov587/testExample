@@ -1,0 +1,14 @@
+* {padding: 0; margin: 0; text-decoration: none;list-style: none;box-sizing: border-box;}
+* {font-size: 14px;color: #666666;font-family: 微软雅黑;}
+
+.flex{display: flex;}
+.bet{justify-content: space-between;}
+.one_row{overflow: hidden;text-overflow: ellipsis;white-space: nowrap;}
+.n_row{display: -webkit-box;-webkit-box-orient: vertical;overflow: hidden;}
+.flex_middle{align-items: center;}
+.flex_center{align-items: center;}
+.img_cover{width: 100%;height: 100%;object-fit: cover;}
+.img_contain{width: 100%;height: 100%;object-fit: contain;}
+.img_fill{width: 100%;height: 100%;object-fit: fill}
+
+.container{width: 1200px;margin: 0 auto;padding: 0px 15px;height: 100%;}
