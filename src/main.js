@@ -5,12 +5,19 @@ import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
 import router from './router'
 import store from './store'
-import _ from 'lodash'
+// import _ from 'lodash'
 require("./mock/mock.js")
 Vue.config.productionTip = false
 Vue.use(ElementUI);
 Vue.use(less)
 
+// 百度地图
+import BaiduMap from 'vue-baidu-map'
+Vue.use(BaiduMap, {
+    ak: 'xPNLWkqdUGRQNqT2ze1Hh6bGVoj0GTuk'
+})
+
+// console.log(_.now());
 new Vue({
   router,
   store,

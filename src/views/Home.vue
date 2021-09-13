@@ -26,6 +26,7 @@ export default {
   },
   methods: {
     showInfo(value) {
+      console.log(value);
       this.title = value
     }
   }
