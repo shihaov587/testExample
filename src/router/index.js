@@ -22,6 +22,11 @@ const routes = [
     path: '/map',
     name: 'BaiduMap',
     component: () => import(/* webpackChunkName: "component" */ '../views/Platform.vue')
+  },
+  {
+    path: '/info',
+    name: 'Info',
+    component: () => import(/* webpackChunkName: "component" */ '../views/Info.vue')
   }
 ]
 

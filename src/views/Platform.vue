@@ -39,15 +39,19 @@
                     <baidu-map></baidu-map>
                 </el-card>
             </el-col>
-            <el-col :span="7"></el-col>
+            <el-col :span="7"><pie-chart></pie-chart></el-col>
         </el-row>
     </div>
 </template>
 
 <script>
 import BaiduMap from '../components/BaiduMap.vue'
+import PieChart from '../components/echarts/piechart.vue'
 export default {
-    components: {BaiduMap},
+    components: {
+        BaiduMap,
+        PieChart
+    },
     data () {
         return {
 

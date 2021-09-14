@@ -9,7 +9,7 @@
           color="blue"
         >
           <bm-info-window
-            title="测试标题"
+            :title="marker.jianLiDanWeiName"
             :position="{ lng: marker.lng, lat: marker.lat }"
             @close="infoWindowClose(marker)"
             :show="marker.showFlag"
@@ -24,46 +24,47 @@
 </template>
 
 <script>
+import { getProjectMapSummaryData, getImportantWaringSummaryData } from '@/api/regulatory/screen.js'
 export default {
   data() {
     return {
       // 标记点坐标
       markers: [
-        {
-          lng: 118.812367,
-          lat: 31.970143,
-          showFlag: false,
-        },
-        {
-          lng: 118.8,
-          lat: 32.090143,
-          showFlag: false,
-        },
-        {
-          lng: 118.804341,
-          lat: 31.975024,
-          showFlag: false,
-        },
-        {
-          lng: 118.960901,
-          lat: 32.152949,
-          showFlag: false,
-        },
-        {
-          lng: 118.750965,
-          lat: 31.988061,
-          showFlag: false,
-        },
-        {
-          lng: 118.816748,
-          lat: 32.082903,
-          showFlag: false,
-        },
-        {
-          lng: 118.824371,
-          lat: 32.047651,
-          showFlag: false,
-        },
+        // {
+        //   lng: 118.812367,
+        //   lat: 31.970143,
+        //   showFlag: false,
+        // },
+        // {
+        //   lng: 118.8,
+        //   lat: 32.090143,
+        //   showFlag: false,
+        // },
+        // {
+        //   lng: 118.804341,
+        //   lat: 31.975024,
+        //   showFlag: false,
+        // },
+        // {
+        //   lng: 118.960901,
+        //   lat: 32.152949,
+        //   showFlag: false,
+        // },
+        // {
+        //   lng: 118.750965,
+        //   lat: 31.988061,
+        //   showFlag: false,
+        // },
+        // {
+        //   lng: 118.816748,
+        //   lat: 32.082903,
+        //   showFlag: false,
+        // },
+        // {
+        //   lng: 118.824371,
+        //   lat: 32.047651,
+        //   showFlag: false,
+        // },
       ],
       // 凸集坐标
       borderSolid: []
@@ -99,6 +100,7 @@ export default {
         k = 0,
         top = 2;
       var tmp = new Object();
+      console.log(pointSet);
       // 找到一个基点，基本就是保证最下面最左面的点
       for (i = 1; i < n; i++) {
         if (
@@ -123,7 +125,7 @@ export default {
             var dis =
               this.distance_no_sqrt(pointSet[0], pointSet[j]) -
               this.distance_no_sqrt(pointSet[0], pointSet[k]);
-            use--; 
+            use--;
             if (dis > 0) {
               pointSet[k] = pointSet[j];
               pointSet[j] = pointSet[use];
@@ -154,68 +156,41 @@ export default {
     // 求包围圈点集
     getSolid() {
       // let arr=this.markers.map(x=>delete x.showFlag)
+      // console.log(this.markers);
       this.Graham_scan(this.markers, this.borderSolid, this.markers.length)
+      // console.log(this.borderSolid);
+    },
+    // 求地图显示项目标记点
+    getMarkets() {
+      getProjectMapSummaryData({}).then((res) => {
+        if (res) {
+          let data = res.data.obj
+          this.markers = data.map(x => {
+            x.lng = parseFloat(x.projectArea.split('|')[0])
+            x.lat = parseFloat(x.projectArea.split('|')[1])
+            x.showFlag = false
+            return x
+          })
+        }
+        
+        // 求包围圈点集
+        this.getSolid();
+      })
     }
   },
   created() {
-    // 求包围圈点集
-    this.getSolid()
+    this.getMarkets();
+    // console.log(this.markers);
   }
 };
 </script>
 
-<style scoped>
-.map {
-  width: 100%;
-  height: 800px;
+<style lang="scss" scoped>
+#baiduMap {
+  height: 100%;
+  .map {
+    width: 100%;
+    height: 100%;
+  }
 }
-
-/*地图标题*/
-.BMap_bubble_title {
-	color:white;
-	font-size:13px;
-	font-weight:bold;
-	text-align:left;
-	padding-left:5px;
-	padding-top:5px;
-	border-bottom:1px solid gray;
-	background-color:#0066b3;
-}
-/* 消息内容 */
-.BMap_bubble_content {
-	background-color:white;
-	padding-left:5px;
-	padding-top:5px;
-	padding-bottom:10px;
-}
-/* 内容 */
-.BMap_pop div:nth-child(9) {
-	top:35px !important;
-	border-radius:7px;
-}
-/* 左上角删除按键 */
-.BMap_pop img {
-	top:43px !important;
-	left:215px !important;
-}
-.BMap_top {
-	display:none;
-}
-.BMap_bottom {
-	display:none;
-}
-.BMap_center {
-	display:none;
-}
-/* 隐藏边角 */
-.BMap_pop div:nth-child(1) div {
-	display:none;
-}
-.BMap_pop div:nth-child(3) {
-	display:none;
-}
-.BMap_pop div:nth-child(7) {
-	display:none;
-}
-
 </style>

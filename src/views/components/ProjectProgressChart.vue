@@ -1,16 +1,22 @@
 <template>
-  <div class="Echarts">
-    <div id="typeChart" style="width: 600px; height: 400px"></div>
+  <div class="Echarts" style="height:100%">
+    <div id="progressChart" style="width: 100%; height: 100%"></div>
   </div>
 </template>
 
 <script>
 export default {
   name: "Echarts",
+  data() {
+      return {
+          myChart: null
+      }
+  },
   methods: {
+    // 初始化图表
     myEcharts() {
       // 基于准备好的dom，初始化echarts实例
-      var myChart = this.$echarts.init(document.getElementById("typeChart"));
+      this.myChart = this.$echarts.init(document.getElementById("progressChart"));
 
       // 指定图表的配置项和数据
       var option = {
@@ -18,15 +24,17 @@ export default {
           left: "center",
         },
         tooltip: {
-          trigger: "item.value",
+          show: 'item'
         },
         legend: {
           orient: "vertical",
-          left: "left",
+          x: 'right',
+          y: 'bottom'
         },
+        color: ['#27DC6C', '#FFC700', '#FC4343'],
         series: [
           {
-            name: "访问来源",
+            name: "项目进度",
             type: "pie",
             radius: "50%",
             data: [
@@ -41,16 +49,28 @@ export default {
                 shadowColor: "rgba(0, 0, 0, 0.5)",
               },
             },
+            label: {
+                normal: {
+                    position: 'outer',
+                    formatter: '{c}'+'个'
+                }
+            }
           },
         ],
       };
 
       // 使用刚指定的配置项和数据显示图表。
-      myChart.setOption(option);
+      this.myChart.setOption(option);
     },
+
+    // 重置图表
+    chartResize () {
+        this.myChart.resize()
+    }
   },
   mounted() {
     this.myEcharts();
+    window.addEventListener('resize', this.chartResize)
   },
 };
 </script>
