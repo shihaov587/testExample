@@ -5,11 +5,13 @@
 </template>
 
 <script>
+import { getProjectProgressSummaryData } from '@/api/regulatory/screen.js'
 export default {
   name: "Echarts",
   data() {
       return {
-          myChart: null
+          myChart: null,
+          allData: {}
       }
   },
   methods: {
@@ -24,7 +26,17 @@ export default {
           left: "center",
         },
         tooltip: {
-          show: 'item'
+          show: true,
+          itemStyle: {
+            color: 'red'
+          }
+        },
+        grid: {
+          x: 1,
+          y: 10,
+          x2: 10,
+          y2: 10,
+          containLabel: true
         },
         legend: {
           orient: "vertical",
@@ -36,11 +48,11 @@ export default {
           {
             name: "项目进度",
             type: "pie",
-            radius: "50%",
+            radius: "80%",
             data: [
-              { value: 53, name: "正常" },
-              { value: 9, name: "滞后" },
-              { value: 3, name: "落后" },
+              { value: this.allData.green, name: "正常" },
+              { value: this.allData.yellow, name: "滞后" },
+              { value: this.allData.red, name: "落后" },
             ],
             emphasis: {
               itemStyle: {
@@ -66,10 +78,21 @@ export default {
     // 重置图表
     chartResize () {
         this.myChart.resize()
+    },
+
+    // 获取数据
+    getData() {
+      getProjectProgressSummaryData({}).then(res => {
+        if(res) {
+          this.allData = res.data
+          this.myEcharts();
+        }
+      })
     }
   },
   mounted() {
-    this.myEcharts();
+    this.getData()
+    
     window.addEventListener('resize', this.chartResize)
   },
 };

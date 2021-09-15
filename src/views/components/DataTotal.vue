@@ -9,7 +9,7 @@
       </div>
       <div class="infoItemBox">
         <p class="num">
-          <span>{{totalObj.totalInverstNum}}</span>亿元
+          <span>{{totalInverstNum.totalInverstNum}}</span>{{totalInverstNum.unit}}
         </p>
         <p class="info">投资总额</p>
       </div>
@@ -29,7 +29,7 @@
       </div>
       <div class="infoItemBox">
         <p class="num">
-          <span>{{totalObj.totalPayNum}}</span>亿元
+          <span>{{totalPayNum.totalPayNum}}</span>{{totalPayNum.unit}}
         </p>
         <p class="info">年度投资额</p>
       </div>
@@ -49,11 +49,19 @@ export default {
     return {
       totalObj: {
         totalProjectNum: "", //项目总数
-        totalInverstNum: "", //投资总额
         nowYearStartNum: "",//当年开工
         preYearMoveNum: "", //上年结转
-        totalPayNum: "", //年度投资额
         nowYearApproveNum: "", //当年批复
+      },
+      // 年度投资额
+      totalPayNum: {
+        unit: "", //单位
+        totalPayNum: "",
+      },
+      // 投资总额
+      totalInverstNum: {
+        unit: "", //单位
+        totalInverstNum: "",
       }
     }
   },
@@ -65,6 +73,8 @@ export default {
       getShortSummaryData({}).then((res) => {
         if (res) {
           this.totalObj = res.data ? res.data : {};
+          this.totalPayNum = this.totalObj.totalPayNum;
+          this.totalInverstNum = this.totalObj.totalInverstNum;
         }
       });
     }
@@ -78,7 +88,7 @@ export default {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  padding: 15px;
+  padding: 15px 0;
   //一行
   .infoRow {
     display: flex;

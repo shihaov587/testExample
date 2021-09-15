@@ -4,21 +4,17 @@
       <div v-for="(marker, index) in markers" :key="index">
         <bm-marker
           :position="{ lng: marker.lng, lat: marker.lat }"
+          animation="BMAP_ANIMATION_BOUNCE"
           @click="infoWindowOpen(marker)"
           color="blue"
         >
           <bm-info-window
-            :title="index+1+'、'+marker.projectName"
+            title="测试标题"
             :position="{ lng: marker.lng, lat: marker.lat }"
             @close="infoWindowClose(marker)"
             :show="marker.showFlag"
           >
-            <p>开工时间：{{marker.jieShouTime}}</p>
-            <p>项目地点： {{marker.pro_AddressDetial}}</p>
-            <p>投资金额： {{marker.pro_Investment}}元</p>
-            <p>建设单位： {{marker.jianLiDanWeiName}}</p>
-            <p>设计单位： {{marker.sheJiDanWeiName}}</p>
-            <p>施工单位： {{marker.shiGongDanWeiName}}</p>
+            <p>这是测试数据</p>
           </bm-info-window>
         </bm-marker>
       </div>
@@ -28,47 +24,46 @@
 </template>
 
 <script>
-import { getProjectMapSummaryData } from '@/api/regulatory/screen.js'
 export default {
   data() {
     return {
       // 标记点坐标
       markers: [
-        // {
-        //   lng: 118.812367,
-        //   lat: 31.970143,
-        //   showFlag: false,
-        // },
-        // {
-        //   lng: 118.8,
-        //   lat: 32.090143,
-        //   showFlag: false,
-        // },
-        // {
-        //   lng: 118.804341,
-        //   lat: 31.975024,
-        //   showFlag: false,
-        // },
-        // {
-        //   lng: 118.960901,
-        //   lat: 32.152949,
-        //   showFlag: false,
-        // },
-        // {
-        //   lng: 118.750965,
-        //   lat: 31.988061,
-        //   showFlag: false,
-        // },
-        // {
-        //   lng: 118.816748,
-        //   lat: 32.082903,
-        //   showFlag: false,
-        // },
-        // {
-        //   lng: 118.824371,
-        //   lat: 32.047651,
-        //   showFlag: false,
-        // },
+        {
+          lng: 118.812367,
+          lat: 31.970143,
+          showFlag: false,
+        },
+        {
+          lng: 118.8,
+          lat: 32.090143,
+          showFlag: false,
+        },
+        {
+          lng: 118.804341,
+          lat: 31.975024,
+          showFlag: false,
+        },
+        {
+          lng: 118.960901,
+          lat: 32.152949,
+          showFlag: false,
+        },
+        {
+          lng: 118.750965,
+          lat: 31.988061,
+          showFlag: false,
+        },
+        {
+          lng: 118.816748,
+          lat: 32.082903,
+          showFlag: false,
+        },
+        {
+          lng: 118.824371,
+          lat: 32.047651,
+          showFlag: false,
+        },
       ],
       // 凸集坐标
       borderSolid: []
@@ -86,13 +81,15 @@ export default {
     // 叉积，正弦的判断
     multiply(p0, p1, p2) {
       return (
-        (p1.lng - p0.lng) * (p2.lat - p0.lat) - (p2.lng - p0.lng) * (p1.lat - p0.lat)
+        (p1.lng - p0.lng) * (p2.lat - p0.lat) -
+        (p2.lng - p0.lng) * (p1.lat - p0.lat)
       );
     },
     // 叉积，正弦的判断
     distance_no_sqrt(p1, p2) {
       return (
-        (p1.lng - p2.lng) * (p1.lng - p2.lng) + (p1.lat - p2.lat) * (p1.lat - p2.lat)
+        (p1.lng - p2.lng) * (p1.lng - p2.lng) +
+        (p1.lat - p2.lat) * (p1.lat - p2.lat)
       );
     },
     // 求凸包凸集算法
@@ -124,7 +121,8 @@ export default {
             k = j;
           } else if (direct == 0) {
             var dis =
-              this.distance_no_sqrt(pointSet[0], pointSet[j]) - this.distance_no_sqrt(pointSet[0], pointSet[k]);
+              this.distance_no_sqrt(pointSet[0], pointSet[j]) -
+              this.distance_no_sqrt(pointSet[0], pointSet[k]);
             use--;
             if (dis > 0) {
               pointSet[k] = pointSet[j];
@@ -154,28 +152,14 @@ export default {
       }
     },
     // 求包围圈点集
-    // 求地图显示项目标记点
-    getMarkets() {
-      getProjectMapSummaryData({}).then((res) => {
-        if (res) {
-          let data = res.data.obj.map(x => {
-            x.lng = Number(x.projectArea.split('|')[0])
-            x.lat = Number(x.projectArea.split('|')[1])
-            x.showFlag = false
-            return x
-          })
-          // 非空处理
-          this.markers = data.map(x => { return x.pro_AddressDetial ? x : null }).filter(n => n)
-          // 求包围标记点
-          // this.Graham_scan(this.markers, this.borderSolid, this.markers.length)
-        }
-
-
-      })
+    getSolid() {
+      // let arr=this.markers.map(x=>delete x.showFlag)
+      this.Graham_scan(this.markers, this.borderSolid, this.markers.length)
     }
   },
   created() {
-    this.getMarkets();
+    // 求包围圈点集
+    this.getSolid()
   }
 };
 </script>
@@ -186,16 +170,6 @@ export default {
   .map {
     width: 100%;
     height: 100%;
-    .BMap_pop {
-      div:last-child {
-        left: 0px !important;
-        top: 0px;
-      }
-    }
-    .BMap_bubble_title {
-      background-color: red;
-    }
   }
 }
-
 </style>

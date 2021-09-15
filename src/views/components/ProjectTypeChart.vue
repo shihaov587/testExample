@@ -5,10 +5,12 @@
 </template>
 
 <script>
+import { getProjectTypeSummaryData } from '@/api/regulatory/screen.js'
 export default {
   data() {
     return {
-      myChart: null
+      myChart: null,
+      allData: {}
     }
   },
   methods: {
@@ -22,7 +24,7 @@ export default {
         grid: {
           x: 1,
           y: 10,
-          x2: 10,
+          x2: 25,
           y2: 10,
           containLabel: true
         },
@@ -32,7 +34,8 @@ export default {
         },
         yAxis: {
           type: 'category',
-          data: ['景观绿化', '教学科研建筑', '场馆建筑', '住宅建筑']
+          data: this.allData.y
+          // data: ['景观绿化', '教学科研建筑', '场馆建筑', '住宅建筑']
         },
         tooltip: {
           // 当鼠标移入axis(坐标轴)时展示 底层的背景色
@@ -52,9 +55,26 @@ export default {
             type: 'bar',
             label: {
               show: true,
-              position: 'right'
+              position: 'right',
+              formatter: '{c}个'
             },
-            data: [17, 14, 9, 13]
+            // data: [17, 14, 9, 13],
+            data: this.allData.x,
+            itemStyle: {
+              normal: {
+                barBorderRadius: [0, 10, 10, 0],
+                color: new this.$echarts.graphic.LinearGradient(1, 0, 0, 0, [
+                  {
+                    offset: 0,
+                    color: '#A300FF'
+                  },
+                  {
+                    offset: 1,
+                    color: '#FF6296 '
+                  },
+                ]),
+              }
+            }
           }
         ]
       };
@@ -66,10 +86,22 @@ export default {
     // 重置图表
     chartResize() {
       this.myChart.resize()
+    },
+
+    // 获取数据
+    getData() {
+      getProjectTypeSummaryData({}).then(res => {
+        if(res) {
+          this.allData.y = res.data.obj.map(item => {return item.projectType})
+          this.allData.x = res.data.obj.map(item => {return item.projectNum})
+          this.myEcharts();
+        }
+      })
     }
   },
   mounted() {
-    this.myEcharts();
+    this.getData()
+    
     window.addEventListener('resize', this.chartResize)
   },
 }
